@@ -1,0 +1,71 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box; /* Ensures padding and border are included in element dimensions */
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; /* Modern font stack */
+  line-height: 1.6;
+  background-color: #f9f9f9;
+  color: #333;
+  padding: 20px;
+}
+
+.box {
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  transition: all 0.3s ease; /* Smooth transition for hover effects */
+}
+
+.box:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+  transform: translateY(-2px); /* Slight lift effect */
+}
+
+.text-expander {
+  display: flex;
+  flex-direction: column; /* Default: button below text */
+  gap: 10px; /* Space between text and button */
+}
+
+.text-expander.button-left {
+  flex-direction: row; /* Button on the left */
+  align-items: center;
+}
+
+.text-expander.button-right {
+  flex-direction: row-reverse; /* Button on the right */
+  align-items: center;
+}
+
+.text-expander.button-top {
+  flex-direction: column-reverse; /* Button above text */
+}
+
+.text-expander span {
+  flex: 1; /* Allows text to take up remaining space */
+}
+
+.text-expander button {
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  color: #1f09cd; /* Default button color */
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.text-expander button:hover {
+  background-color: rgba(31, 9, 205, 0.1); /* Subtle background on hover */
+  transform: scale(1.05); /* Slight zoom effect */
+}
+
+.text-expander button:active {
+  transform: scale(0.95); /* Click effect */
+}
