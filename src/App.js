@@ -52,7 +52,7 @@ const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 const KEY = "c4c32879";
 export default function App() {
-  const [query, setQuery] = useState("inception");
+  const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -86,14 +86,21 @@ export default function App() {
   function handleDeleteWatched(id) {
     setWatched((watched) => watched.filter((movie) => movie.imdbID !== id));
   }
+
   useEffect(
     function () {
+      // !!   this is a cleanUp function
+      // !!   it will clean up the previous effect
+      // !!   before the next effect run
+      // !!   like a paint the first one then the next one
+      const controller = new AbortController();
       async function fetchMovies() {
         try {
           setIsLoading(true);
           setError("");
           const res = await fetch(
-            `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+            `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`,
+            { signal: controller.signal }
           );
           if (!res.ok)
             throw new Error("Something went wrong with fetching movies");
@@ -102,10 +109,15 @@ export default function App() {
           if (data.Response === "False") throw new Error("Movie not found");
 
           setMovies(data.Search);
+          setError("");
           // console.error(data);
         } catch (err) {
-          setError(err.message);
+          if (err.name === "AbortError") {
+            console.log(err.message);
+            setError(err.message);
+          }
         } finally {
+          ``;
           setIsLoading(false);
         }
       }
@@ -114,7 +126,13 @@ export default function App() {
         setError("");
         return;
       }
+
+      handleCloseMovie();
+      // ! you shuold use the controller here after declare it
       fetchMovies();
+      return function () {
+        controller.abort();
+      };
     },
     [query]
   );
@@ -314,8 +332,34 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
     onAddWatched(newWatchedMovie);
     onCloseMovie(null);
   }
+
   useEffect(
     function () {
+      function callback(e) {
+        if (e.code === "Escape") {
+          onCloseMovie();
+        }
+      }
+
+      document.addEventListener("keydown", callback);
+
+      // *console.log("Adding event listener");
+      // *cleanUp function
+      // *it will remove the event listener
+      // *it will run when the component unmount
+      // *or when the dependencies change
+      return function () {
+        document.removeEventListener("keydown", callback);
+      };
+    },
+    [onCloseMovie]
+  );
+  useEffect(
+    function () {
+      if (!selectedId) return;
+      // !   this is a cleanUp function
+      // !   it will clean up the previous effect
+      // !   before the next effect run
       async function getMovieDetails() {
         setIsLoading(true);
         const res = await fetch(
