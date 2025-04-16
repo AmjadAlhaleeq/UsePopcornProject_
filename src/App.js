@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import StarRating from "./StarRating";
 
 const tempMovieData = [
@@ -117,14 +117,14 @@ export default function App() {
             setError(err.message);
           }
         } finally {
-          ``;
           setIsLoading(false);
         }
       }
+
       if (!query.length) {
         setMovies([]);
         setError("");
-        return;
+        return () => {}; // Always return a function
       }
 
       handleCloseMovie();
